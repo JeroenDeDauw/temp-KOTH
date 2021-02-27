@@ -19,24 +19,31 @@ local ScenarioFramework = import('/lua/ScenarioFramework.lua');
 --         }
 --     },
 -- }
-    
-function Tick(playerTables)
 
-    -- compute amount of contestants
+local function countContestants(playerTables)
     local contestants = 0
-    for k, player in playerTables do 
-        if player.isContesting then 
+    for _, player in playerTables do
+        if player.isContesting then
             contestants = contestants + 1
         end
     end
+    return contestants
+end
 
-    -- compute amount of kings
-    local kings = 0 
-    for k, player in playerTables do 
-        if player.isKing then 
-            kings = kings + 1 
+local function countKings(playerTables)
+    local kings = 0
+    for _, player in playerTables do
+        if player.isKing then
+            kings = kings + 1
         end
     end
+    return kings
+end
+    
+function Tick(playerTables)
+
+    local amountOfContestants = countContestants(playerTables)
+    local amountOfKings = countKings(playerTables)
 
     -- determine total income
     local total = 0 
@@ -46,11 +53,11 @@ function Tick(playerTables)
     end
 
     -- if there are any kings
-    if kings > 0 then 
+    if amountOfKings > 0 then
         for k, player in playerTables do 
             if player.isKing then 
                 -- determine the amount
-                local amount = (1.0 / kings) * 0.10 * total
+                local amount = (1.0 / amountOfKings) * 0.10 * total
     
                 -- provide resources
                 local brain = GetArmyBrain(player.strArmy)
@@ -59,11 +66,11 @@ function Tick(playerTables)
         end
     else 
         -- else, if there are any contestants
-        if contestants > 0 then 
+        if amountOfContestants > 0 then
             for k, player in playerTables do 
                 if player.isContesting then 
                     -- determine the amount
-                    local amount = (1.0 / contestants) * 0.10 * total
+                    local amount = (1.0 / amountOfContestants) * 0.10 * total
     
                     -- provide resources
                     local brain = GetArmyBrain(player.strArmy)
