@@ -49,12 +49,11 @@ local function countTotalMassEco(playerTables)
 end
 
 local function giveBonusToKings(playerTables, amountOfKings)
-    local totalMassEco = countTotalMassEco(playerTables)
+    local massBonus = countTotalMassEco(playerTables) * 0.1 / amountOfKings
 
     for _, player in playerTables do
         if player.isKing then
-            local amount = (1.0 / amountOfKings) * 0.10 * totalMassEco
-            GetArmyBrain(player.strArmy):GiveResource('MASS', amount)
+            GetArmyBrain(player.strArmy):GiveResource('MASS', massBonus)
         end
     end
 end
@@ -63,12 +62,11 @@ local function giveBonusToContestants(playerTables)
     local amountOfContestants = countContestants(playerTables)
 
     if amountOfContestants > 0 then
-        local totalMassEco = countTotalMassEco(playerTables)
+        local massBonus = countTotalMassEco(playerTables) * 0.1 / amountOfContestants
 
         for _, player in playerTables do
             if player.isContesting then
-                local amount = (1.0 / amountOfContestants) * 0.10 * totalMassEco
-                GetArmyBrain(player.strArmy):GiveResource('MASS', amount)
+                GetArmyBrain(player.strArmy):GiveResource('MASS', massBonus)
             end
         end
     end
