@@ -60,7 +60,13 @@ local function countAlivePlayers(playerTables)
 end
 
 local function countAverageMassIncome(playerTables)
-    return countTotalMassIncome(playerTables) / countAlivePlayers(playerTables)
+    local alivePlayerCount = countAlivePlayers(playerTables)
+
+    if alivePlayerCount == 0 then
+        return 0
+    end
+
+    return countTotalMassIncome(playerTables) / alivePlayerCount
 end
 
 local function giveBonusToKings(playerTables, amountOfKings)
