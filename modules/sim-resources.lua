@@ -39,25 +39,27 @@ local function countKings(playerTables)
     end
     return kings
 end
-    
+
+local function countTotalMassEco(playerTables)
+    local total = 0
+    for _, player in playerTables do
+        total = total + GetArmyBrain(player.strArmy):GetEconomyIncome("MASS")
+    end
+    return total
+end
+
 function Tick(playerTables)
 
     local amountOfContestants = countContestants(playerTables)
     local amountOfKings = countKings(playerTables)
-
-    -- determine total income
-    local total = 0 
-    for k, player in playerTables do 
-        local brain = GetArmyBrain(player.strArmy)
-        total = total + brain:GetEconomyIncome("MASS")
-    end
+    local totalMassEco = countTotalMassEco(playerTables)
 
     -- if there are any kings
     if amountOfKings > 0 then
         for k, player in playerTables do 
             if player.isKing then 
                 -- determine the amount
-                local amount = (1.0 / amountOfKings) * 0.10 * total
+                local amount = (1.0 / amountOfKings) * 0.10 * totalMassEco
     
                 -- provide resources
                 local brain = GetArmyBrain(player.strArmy)
@@ -70,7 +72,7 @@ function Tick(playerTables)
             for k, player in playerTables do 
                 if player.isContesting then 
                     -- determine the amount
-                    local amount = (1.0 / amountOfContestants) * 0.10 * total
+                    local amount = (1.0 / amountOfContestants) * 0.10 * totalMassEco
     
                     -- provide resources
                     local brain = GetArmyBrain(player.strArmy)
