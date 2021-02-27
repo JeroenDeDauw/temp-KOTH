@@ -59,28 +59,27 @@ local function giveBonusToKings(playerTables, amountOfKings)
     end
 end
 
-function Tick(playerTables)
-
+local function giveBonusToContestants(playerTables)
     local amountOfContestants = countContestants(playerTables)
-    local amountOfKings = countKings(playerTables)
 
+    if amountOfContestants > 0 then
+        local totalMassEco = countTotalMassEco(playerTables)
 
-    -- if there are any kings
-    if amountOfKings > 0 then
-        giveBonusToKings(playerTables, amountOfKings)
-    else 
-        -- else, if there are any contestants
-        if amountOfContestants > 0 then
-            for k, player in playerTables do 
-                if player.isContesting then 
-                    -- determine the amount
-                    local amount = (1.0 / amountOfContestants) * 0.10 * totalMassEco
-    
-                    -- provide resources
-                    local brain = GetArmyBrain(player.strArmy)
-                    brain:GiveResource('MASS', amount)
-                end
+        for _, player in playerTables do
+            if player.isContesting then
+                local amount = (1.0 / amountOfContestants) * 0.10 * totalMassEco
+                GetArmyBrain(player.strArmy):GiveResource('MASS', amount)
             end
         end
+    end
+end
+
+function Tick(playerTables)
+    local amountOfKings = countKings(playerTables)
+
+    if amountOfKings > 0 then
+        giveBonusToKings(playerTables, amountOfKings)
+    else
+        giveBonusToContestants(playerTables)
     end
 end
