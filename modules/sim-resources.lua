@@ -1,5 +1,6 @@
 
 local ScenarioFramework = import('/lua/ScenarioFramework.lua');
+local bonusAsFractionOfAverageIncome = 0.5
 
 -- playerTables = {
 --     armies={
@@ -40,7 +41,7 @@ local function countKings(playerTables)
     return kings
 end
 
-local function countTotalMassEco(playerTables)
+local function countTotalMassIncome(playerTables)
     local total = 0
     for _, player in playerTables do
         total = total + GetArmyBrain(player.strArmy):GetEconomyIncome("MASS")
@@ -58,12 +59,12 @@ local function countAlivePlayers(playerTables)
     return playerCount
 end
 
-local function countAverageMassEco(playerTables)
-    return countTotalMassEco(playerTables) / countAlivePlayers(playerTables)
+local function countAverageMassIncome(playerTables)
+    return countTotalMassIncome(playerTables) / countAlivePlayers(playerTables)
 end
 
 local function giveBonusToKings(playerTables, amountOfKings)
-    local massBonus = countAverageMassEco(playerTables) * 0.5 / amountOfKings
+    local massBonus = countAverageMassIncome(playerTables) * bonusAsFractionOfAverageIncome / amountOfKings
 
     for _, player in playerTables do
         if player.isKing then
@@ -76,7 +77,7 @@ local function giveBonusToContestants(playerTables)
     local amountOfContestants = countContestants(playerTables)
 
     if amountOfContestants > 0 then
-        local massBonus = countAverageMassEco(playerTables) * 0.5 / amountOfContestants
+        local massBonus = countAverageMassIncome(playerTables) * bonusAsFractionOfAverageIncome / amountOfContestants
 
         for _, player in playerTables do
             if player.isContesting then
