@@ -48,8 +48,22 @@ local function countTotalMassEco(playerTables)
     return total
 end
 
+local function countAlivePlayers(playerTables)
+    local playerCount = 0
+    for _, player in playerTables do
+        if not player.isDefeated then
+            playerCount = playerCount + 1
+        end
+    end
+    return playerCount
+end
+
+local function countAverageMassEco(playerTables)
+    return countTotalMassEco(playerTables) / countAlivePlayers(playerTables)
+end
+
 local function giveBonusToKings(playerTables, amountOfKings)
-    local massBonus = countTotalMassEco(playerTables) * 0.1 / amountOfKings
+    local massBonus = countAverageMassEco(playerTables) * 0.5 / amountOfKings
 
     for _, player in playerTables do
         if player.isKing then
@@ -62,7 +76,7 @@ local function giveBonusToContestants(playerTables)
     local amountOfContestants = countContestants(playerTables)
 
     if amountOfContestants > 0 then
-        local massBonus = countTotalMassEco(playerTables) * 0.1 / amountOfContestants
+        local massBonus = countAverageMassEco(playerTables) * 0.5 / amountOfContestants
 
         for _, player in playerTables do
             if player.isContesting then
